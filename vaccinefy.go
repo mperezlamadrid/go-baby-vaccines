@@ -33,10 +33,10 @@ var (
 	}
 )
 
-// HasVaccineApplication receives date of birth and a request date and
+// HasVaccinesToApply receives date of birth and a request date and
 // returns true or false about if that day there are vaccines to apply.
-func HasVaccineApplication(dob, reqDate time.Time) bool {
-	monthsOld := int(reqDate.Sub(dob).Hours() / 720)
+func HasVaccinesToApply(DOB, reqDate time.Time) bool {
+	monthsOld := int(reqDate.Sub(DOB).Hours() / 720)
 
 	if len(vaccinesPerMonth[monthsOld]) > 0 {
 		return true
@@ -44,14 +44,14 @@ func HasVaccineApplication(dob, reqDate time.Time) bool {
 	return false
 }
 
-// GetAllDatesToApplyVaccines receives a date of birth and returns a
+// GetDatesToApplyVaccines receives a date of birth and returns a
 // list of dates and references about its vaccines.
-func GetAllDatesToApplyVaccines(dob time.Time) []Vaccines {
+func GetDatesToApplyVaccines(DOB time.Time) []Vaccines {
 	var vaccinesDate []Vaccines
 
 	for months, vaccines := range vaccinesPerMonth {
 		new := Vaccines{
-			Date:       dob.AddDate(0, months, 0),
+			Date:       DOB.AddDate(0, months, 0),
 			References: vaccines,
 		}
 		vaccinesDate = append(vaccinesDate, new)
@@ -61,15 +61,20 @@ func GetAllDatesToApplyVaccines(dob time.Time) []Vaccines {
 	return vaccinesDate
 }
 
-func GetVaccinesReferenceByNumberOfMonth(dob time.Time, months int) Vaccines {
+// GetVaccinesReference receives a date of birth and number of months,
+// it returns a vaccines reference if there
+func GetVaccinesReference(DOB time.Time, months int) Vaccines {
 	var vaccineDate Vaccines
 
-	if len(vaccinesPerMonth[months]) > 0 {
-		vaccineDate = Vaccines{
-			Date:       dob.AddDate(0, months, 0),
-			References: vaccinesPerMonth[months],
-		}
+	if len(vaccinesPerMonth[months]) == 0 {
+		return vaccineDate
 	}
+
+	vaccineDate = Vaccines{
+		Date:       DOB.AddDate(0, months, 0),
+		References: vaccinesPerMonth[months],
+	}
+
 	return vaccineDate
 }
 

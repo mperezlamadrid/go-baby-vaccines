@@ -7,87 +7,93 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestHasVaccineApplication(t *testing.T) {
-	type hasApplicationTestCase struct {
-		dob         time.Time
-		reqDate     time.Time
-		response    bool
-		description string
+func TestHasVaccinesToApply(t *testing.T) {
+	type hasVaccinesTestCase struct {
+		DOB         time.Time
+		ReqDate     time.Time
+		Result      bool
+		Description string
 	}
 
-	cases := []hasApplicationTestCase{
-		hasApplicationTestCase{
-			dob:         time.Date(2016, 11, 1, 0, 0, 0, 0, time.UTC),
-			reqDate:     time.Date(2017, 1, 12, 0, 0, 0, 0, time.UTC),
-			response:    true,
-			description: "application of vaccines from 2 months",
+	cases := []hasVaccinesTestCase{
+		hasVaccinesTestCase{
+			DOB:         time.Date(2016, 11, 1, 0, 0, 0, 0, time.UTC),
+			ReqDate:     time.Date(2017, 1, 12, 0, 0, 0, 0, time.UTC),
+			Result:      true,
+			Description: "application of vaccines from 2 months",
 		},
-		hasApplicationTestCase{
-			dob:         time.Date(2016, 11, 1, 0, 0, 0, 0, time.UTC),
-			reqDate:     time.Date(2021, 11, 1, 0, 0, 0, 0, time.UTC),
-			response:    true,
-			description: "application of vaccines from 5 years",
+		hasVaccinesTestCase{
+			DOB:         time.Date(2016, 11, 1, 0, 0, 0, 0, time.UTC),
+			ReqDate:     time.Date(2021, 11, 1, 0, 0, 0, 0, time.UTC),
+			Result:      true,
+			Description: "application of vaccines from 5 years",
 		},
-		hasApplicationTestCase{
-			dob:         time.Date(2016, 11, 1, 0, 0, 0, 0, time.UTC),
-			reqDate:     time.Date(2017, 2, 1, 0, 0, 0, 0, time.UTC),
-			response:    false,
-			description: "application of vaccines from 3 months",
+		hasVaccinesTestCase{
+			DOB:         time.Date(2016, 11, 1, 0, 0, 0, 0, time.UTC),
+			ReqDate:     time.Date(2017, 2, 1, 0, 0, 0, 0, time.UTC),
+			Result:      false,
+			Description: "application of vaccines from 3 months",
 		},
 	}
 
-	for _, HVACase := range cases {
-		result := HasVaccineApplication(HVACase.dob, HVACase.reqDate)
-		assert.Equal(t, HVACase.response, result, HVACase.description)
+	for _, testCase := range cases {
+		result := HasVaccinesToApply(testCase.DOB, testCase.ReqDate)
+		assert.Equal(t, testCase.Result, result, testCase.Description)
 	}
 }
 
-func TestGetAllDatesToApplyVaccines(t *testing.T) {
+func TestGetDatesToApplyVaccines(t *testing.T) {
 	type getDatesTestCase struct {
-		dob         time.Time
-		response    Vaccines
-		description string
+		DOB         time.Time
+		Result      Vaccines
+		Description string
 	}
 
 	cases := []getDatesTestCase{
 		getDatesTestCase{
-			dob: time.Date(2016, 11, 1, 0, 0, 0, 0, time.UTC),
-			response: Vaccines{
+			DOB: time.Date(2016, 11, 1, 0, 0, 0, 0, time.UTC),
+			Result: Vaccines{
 				Date:       time.Date(2016, 11, 1, 0, 0, 0, 0, time.UTC),
 				References: []vaccineReference{{"Hepatitis B", "0"}, {"Tuberculosis B.C.G", "unica"}},
 			},
-			description: "application of vaccines from 7 months",
+			Description: "application of vaccines from 7 months",
 		},
 	}
 
-	for _, getDateCase := range cases {
-		result := GetAllDatesToApplyVaccines(getDateCase.dob)
-		assert.Equal(t, getDateCase.response, result[0], getDateCase.description)
+	for _, testCase := range cases {
+		result := GetDatesToApplyVaccines(testCase.DOB)
+		assert.Equal(t, testCase.Result, result[0], testCase.Description)
 	}
 }
 
-func TestGetVaccinesReferenceByNumberOfMonth(t *testing.T) {
-	type getGetVaccinesReferenceTestCase struct {
-		dob         time.Time
-		months      int
-		response    Vaccines
-		description string
+func TestGetVaccinesReference(t *testing.T) {
+	type getVaccinesReferenceTestCase struct {
+		DOB         time.Time
+		Months      int
+		Result      Vaccines
+		Description string
 	}
 
-	cases := []getGetVaccinesReferenceTestCase{
-		getGetVaccinesReferenceTestCase{
-			dob:    time.Date(2016, 11, 1, 0, 0, 0, 0, time.UTC),
-			months: 7,
-			response: Vaccines{
+	cases := []getVaccinesReferenceTestCase{
+		getVaccinesReferenceTestCase{
+			DOB:    time.Date(2016, 11, 1, 0, 0, 0, 0, time.UTC),
+			Months: 7,
+			Result: Vaccines{
 				Date:       time.Date(2016, 6, 1, 0, 0, 0, 0, time.UTC),
 				References: []vaccineReference{{"Influenza", "2"}},
 			},
-			description: "application of vaccines from 7 months",
+			Description: "application of vaccines from 7 months",
+		},
+		getVaccinesReferenceTestCase{
+			DOB:         time.Date(2016, 11, 1, 0, 0, 0, 0, time.UTC),
+			Months:      1,
+			Result:      Vaccines{},
+			Description: "application of vaccines from 1 month",
 		},
 	}
 
-	for _, getVaccinesRefCase := range cases {
-		result := GetVaccinesReferenceByNumberOfMonth(getVaccinesRefCase.dob, getVaccinesRefCase.months)
-		assert.Equal(t, getVaccinesRefCase.response.References, result.References, getVaccinesRefCase.description)
+	for _, testCase := range cases {
+		result := GetVaccinesReference(testCase.DOB, testCase.Months)
+		assert.Equal(t, testCase.Result.References, result.References, testCase.Description)
 	}
 }
