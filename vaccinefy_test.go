@@ -45,16 +45,16 @@ func TestHasVaccinesToApply(t *testing.T) {
 func TestGetDatesToApplyVaccines(t *testing.T) {
 	type getDatesTestCase struct {
 		DOB         time.Time
-		Result      Vaccines
+		Result      InfoVaccines
 		Description string
 	}
 
 	cases := []getDatesTestCase{
 		getDatesTestCase{
 			DOB: time.Date(2016, 11, 1, 0, 0, 0, 0, time.UTC),
-			Result: Vaccines{
+			Result: InfoVaccines{
 				Date:       time.Date(2016, 11, 1, 0, 0, 0, 0, time.UTC),
-				References: []vaccineReference{{"Hepatitis B", "0"}, {"Tuberculosis B.C.G", "unica"}},
+				References: []vaccine{{"Hepatitis B", "0"}, {"Tuberculosis B.C.G", "unica"}},
 			},
 			Description: "application of vaccines from 7 months",
 		},
@@ -70,7 +70,7 @@ func TestGetVaccinesReference(t *testing.T) {
 	type getVaccinesReferenceTestCase struct {
 		DOB         time.Time
 		Months      int
-		Result      Vaccines
+		Result      InfoVaccines
 		Description string
 	}
 
@@ -78,16 +78,16 @@ func TestGetVaccinesReference(t *testing.T) {
 		getVaccinesReferenceTestCase{
 			DOB:    time.Date(2016, 11, 1, 0, 0, 0, 0, time.UTC),
 			Months: 7,
-			Result: Vaccines{
+			Result: InfoVaccines{
 				Date:       time.Date(2016, 6, 1, 0, 0, 0, 0, time.UTC),
-				References: []vaccineReference{{"Influenza", "2"}},
+				References: []vaccine{{"Influenza", "2"}},
 			},
 			Description: "application of vaccines from 7 months",
 		},
 		getVaccinesReferenceTestCase{
 			DOB:         time.Date(2016, 11, 1, 0, 0, 0, 0, time.UTC),
 			Months:      1,
-			Result:      Vaccines{},
+			Result:      InfoVaccines{},
 			Description: "application of vaccines from 1 month",
 		},
 	}
